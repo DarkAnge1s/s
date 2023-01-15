@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    
+    <style>
+      .calculator{
+        width: 300px;
+        height: 300px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+      }
+      .btn{
+        border: 1px solid black;
+        font-size: 32px;
+      }
+      .result{
+        grid-column:  1 / 5;
+        display:flex;
+         align-items: end;
+         justify-content: end;
+         border: 1px solid black;
+        font-size: 27px;
+        background-color: aqua;
+
+        
+      }
+    </style>
+    <title>course JS</title>
+</head>
+<body>
+    <div id='calculator' class='calculator'>
+      <div id = 'result' class ='result btn'> </div>
+      <button class ='btn'> 7</button>
+      <button class ='btn'>8</button>
+      <button class ='btn'>9</button>
+      <button class ='btn'>*</button>
+      <button class ='btn'>4</button>
+      <button class ='btn'>5</button>
+      <button class ='btn'>6</button>
+      <button class ='btn'>/</button>
+      <button class ='btn'>1</button>
+      <button class ='btn'>2</button>
+      <button class ='btn'>3</button>
+      <button class ='btn'>+</button>
+      <button class ='btn'>С</button>
+      <button class ='btn'>0</button>
+      <button class ='btn'>-</button>
+      <button class ='btn'>=</button>
+    
+    </div>
+    <script>
+      const calculator = document.getElementById('calculator')
+      const result = document.getElementById('result')
+
+      let znak = '';
+      let lastSymbol = ''
+      let firstNumber = '';
+      let secondNumber = '';
+      let finish = false;
+
+      const arrayZnak = ['-','+','/','*']
+      const arrayNumber = ['0','1','2','3','4','5','6','7','8','9'];
+
+    function clearAll(){
+      znak = '';
+      firstNumber = '';
+      secondNumber = '';
+      result.innerText = 0;
+    }
+
+    function actions(action,onenumber,twonumber,result){
+      switch(znak){
+        case '+':
+        onenumber = +onenumber + +twonumber;
+        return onenumber;
+        case '-':
+        onenumber = onenumber - twonumber;
+        return onenumber;
+        case '*':
+        onenumber = onenumber * twonumber;
+        return onenumber;
+        case '/':
+          if(twonumber === '0'){
+            result.innerText = 'Ошибка';
+            twonumber = '';
+            action = '';
+            onenumber = '';
+            return;
+          }
+          onenumber = onenumber / twonumber;
+          return onenumber;
+        }
+      }
+      function foo(event){     
+		if(event.target.innerText === 'С'){
+      clearAll();
+      return;
+    }
+    if(!event.target.classList.contains('btn')){
+      return;
+    }
+    result.innerText = '';
+    const number = event.target.innerText;
+
+    if(arrayNumber.includes(number)){
+      if(secondNumber === '' && znak === ''){
+      firstNumber += number;
+      result.innerText = firstNumber;
+      lastSymbol = firstNumber
+    }else if(firstNumber != '' && finish){
+      secondNumber = number;
+      finish = false;
+      result.innerText = secondNumber;
+      lastSymbol = secondNumber
+      console.log(firstNumber,znak,secondNumber)
+    }else{
+      secondNumber += number;
+      result.innerText = secondNumber;
+      console.log(firstNumber,znak,secondNumber)
+      lastSymbol = secondNumber
+    }
+    }
+    if(arrayZnak.includes(number) &&  znak === ''){
+      znak = event.target.innerText;
+      result.innerText = znak;
+      return;
+    }
+    if(number === '='){
+          firstNumber = actions(znak,firstNumber,secondNumber,result)
+          result.innerText = firstNumber;
+          console.log(znak,firstNumber,secondNumber)
+          lastSymbol = '=';
+          finish = true;
+    }
+    if(znak != '' && arrayZnak.includes(number)){
+      console.log(firstNumber,znak,secondNumber)
+      if(lastSymbol === '='){
+        secondNumber = '';
+      } else {firstNumber = actions(znak,firstNumber,secondNumber,result)}
+      lastSymbol = znak
+      znak = number;
+      result.innerText = firstNumber;
+      console.log(firstNumber,znak,secondNumber)
+      finish = true;
+    }
+    }
+  
+    
+  calculator.addEventListener('click',foo)
+    </script>
+</body>
+</html>
